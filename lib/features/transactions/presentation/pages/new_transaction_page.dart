@@ -8,7 +8,12 @@ import '../../domain/entities/financial_transaction.dart';
 import '../../domain/entities/transaction_type.dart';
 
 class NewTransactionPage extends ConsumerStatefulWidget {
-  const NewTransactionPage({super.key});
+  const NewTransactionPage({
+    super.key,
+    this.initialType = TransactionType.expense,
+  });
+
+  final TransactionType initialType;
 
   @override
   ConsumerState<NewTransactionPage> createState() => _NewTransactionPageState();
@@ -21,9 +26,15 @@ class _NewTransactionPageState extends ConsumerState<NewTransactionPage> {
   final _categoryController = TextEditingController();
   final _notesController = TextEditingController();
 
-  TransactionType _type = TransactionType.expense;
+  late TransactionType _type;
   DateTime _selectedDate = DateTime.now();
   bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _type = widget.initialType;
+  }
 
   @override
   void dispose() {
