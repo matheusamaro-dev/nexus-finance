@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/design_system/components/nexus_card.dart';
+import '../../../core/design_system/components/nexus_empty_state.dart';
+import '../../../core/design_system/components/nexus_section_title.dart';
+import '../../../core/design_system/components/nexus_status_chip.dart';
+import '../../../core/design_system/nexus_colors.dart';
+import '../../../core/design_system/nexus_spacing.dart';
 import '../../../core/money/money.dart';
 import '../../transactions/application/providers/transactions_providers.dart';
 import '../../transactions/domain/entities/financial_transaction.dart';
@@ -155,8 +161,6 @@ class _DashboardFinancialContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -187,12 +191,7 @@ class _DashboardFinancialContent extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 28),
-        Text(
-          'Ações rápidas',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
+        const NexusSectionTitle(title: 'Ações rápidas'),
         const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -235,50 +234,48 @@ class _BalanceCard extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final isNegative = balance.isNegative;
 
-    return Card(
+    return NexusCard(
       color: colors.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Saldo do mês',
-              style: TextStyle(
-                color: colors.onPrimaryContainer.withValues(alpha: 0.75),
-              ),
+      padding: const EdgeInsets.all(NexusSpacing.xl),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Saldo do mês',
+            style: TextStyle(
+              color: colors.onPrimaryContainer.withValues(alpha: 0.75),
             ),
-            const SizedBox(height: 8),
-            Text(
-              balance.format(),
-              style: TextStyle(
-                color: isNegative ? colors.error : colors.onPrimaryContainer,
-                fontSize: 34,
-                fontWeight: FontWeight.w800,
-              ),
+          ),
+          const SizedBox(height: NexusSpacing.sm),
+          Text(
+            balance.format(),
+            style: TextStyle(
+              color: isNegative ? colors.error : colors.onPrimaryContainer,
+              fontSize: 34,
+              fontWeight: FontWeight.w800,
             ),
-            const SizedBox(height: 18),
-            Row(
-              children: [
-                Icon(
-                  Icons.receipt_long_outlined,
-                  size: 18,
-                  color: colors.onPrimaryContainer,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    _transactionCountLabel(transactionCount),
-                    style: TextStyle(
-                      color: colors.onPrimaryContainer,
-                      fontSize: 12,
-                    ),
+          ),
+          const SizedBox(height: NexusSpacing.lg),
+          Row(
+            children: [
+              Icon(
+                Icons.receipt_long_outlined,
+                size: 18,
+                color: colors.onPrimaryContainer,
+              ),
+              const SizedBox(width: NexusSpacing.sm),
+              Expanded(
+                child: Text(
+                  _transactionCountLabel(transactionCount),
+                  style: TextStyle(
+                    color: colors.onPrimaryContainer,
+                    fontSize: 12,
                   ),
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -311,30 +308,31 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final accent = positive ? Colors.greenAccent.shade400 : colors.error;
+    final accent = positive ? NexusColors.income : NexusColors.expense;
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: accent),
-            const SizedBox(height: 18),
-            Text(
-              title,
-              style: TextStyle(color: colors.onSurfaceVariant, fontSize: 12),
+    return NexusCard(
+      padding: const EdgeInsets.all(NexusSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          NexusStatusChip(
+            label: title,
+            icon: icon,
+            type: positive
+                ? NexusStatusChipType.success
+                : NexusStatusChipType.error,
+          ),
+          const SizedBox(height: NexusSpacing.lg),
+          Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: accent,
+              fontWeight: FontWeight.w700,
             ),
-            const SizedBox(height: 4),
-            Text(
-              value,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -382,48 +380,20 @@ class _RecentTransactionsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Últimos lançamentos',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const SizedBox(height: 12),
+        const NexusSectionTitle(title: 'Últimos lançamentos'),
+        const SizedBox(height: NexusSpacing.md),
         if (transactions.isEmpty)
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(22),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.receipt_long_outlined,
-                    size: 38,
-                    color: colors.primary,
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Nenhum lançamento cadastrado',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Suas receitas e despesas aparecerão aqui.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: colors.onSurfaceVariant),
-                  ),
-                ],
-              ),
-            ),
+          const NexusEmptyState(
+            icon: Icons.receipt_long_outlined,
+            title: 'Nenhum lançamento cadastrado',
+            message: 'Suas receitas e despesas aparecerão aqui.',
           )
         else
-          Card(
+          NexusCard(
+            padding: EdgeInsets.zero,
             child: Column(
               children: [
                 for (var index = 0; index < transactions.length; index++) ...[
@@ -467,7 +437,7 @@ class _RecentTransactionTile extends StatelessWidget {
       trailing: Text(
         '${isIncome ? '+' : '-'} ${transaction.amount.format()}',
         style: TextStyle(
-          color: isIncome ? Colors.greenAccent.shade400 : colors.error,
+          color: isIncome ? NexusColors.income : colors.error,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -494,25 +464,14 @@ class _DashboardErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(28),
-        child: Column(
-          children: [
-            const Icon(Icons.error_outline_rounded, size: 48),
-            const SizedBox(height: 16),
-            const Text(
-              'Não foi possível carregar o resumo financeiro.',
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 18),
-            OutlinedButton.icon(
-              onPressed: onRetry,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Tentar novamente'),
-            ),
-          ],
-        ),
+    return NexusEmptyState(
+      icon: Icons.error_outline_rounded,
+      title: 'Não foi possível carregar o resumo financeiro',
+      message: 'Verifique os dados e tente carregar novamente.',
+      action: OutlinedButton.icon(
+        onPressed: onRetry,
+        icon: const Icon(Icons.refresh_rounded),
+        label: const Text('Tentar novamente'),
       ),
     );
   }
