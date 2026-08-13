@@ -106,6 +106,46 @@ void main() {
 
     expect(repository.savedTransactions, [existingTransaction]);
   });
+
+  testWidgets('busca e filtra os lançamentos por tipo', (tester) async {
+    final incomeTransaction = FinancialTransaction(
+      id: 'transaction-2',
+      description: 'Salário',
+      amount: Money.fromCents(490071),
+      type: TransactionType.income,
+      date: DateTime(2026, 8, 5),
+      createdAt: DateTime(2026, 8, 5, 9),
+      category: 'Renda',
+    );
+    final repository = _FakeTransactionsRepository([
+      incomeTransaction,
+      existingTransaction,
+    ]);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          transactionsRepositoryProvider.overrideWithValue(repository),
+        ],
+        child: const MaterialApp(home: TransactionsPage()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final searchField = find.byKey(const ValueKey('transaction-search-field'));
+    await tester.enterText(searchField, 'moradia');
+    await tester.pump();
+
+    expect(find.text('Energia EDP'), findsOneWidget);
+    expect(find.text('Salário'), findsNothing);
+
+    await tester.enterText(searchField, '');
+    await tester.tap(find.text('Receitas'));
+    await tester.pump();
+
+    expect(find.text('Salário'), findsOneWidget);
+    expect(find.text('Energia EDP'), findsNothing);
+  });
 }
 
 final class _FakeTransactionsRepository implements TransactionsRepository {
