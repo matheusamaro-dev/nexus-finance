@@ -11,8 +11,46 @@ import 'widgets/dashboard_financial_content.dart';
 import 'widgets/dashboard_header.dart';
 import 'widgets/dashboard_loading_state.dart';
 
-class DashboardPage extends ConsumerWidget {
-  const DashboardPage({super.key});
+class DashboardPage extends ConsumerStatefulWidget {
+  const DashboardPage({super.key, this.initialReferenceDate, this.currentDate});
+
+  final DateTime? initialReferenceDate;
+  final DateTime? currentDate;
+
+  @override
+  ConsumerState<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends ConsumerState<DashboardPage> {
+  late DateTime _referenceDate;
+
+  @override
+  void initState() {
+    super.initState();
+    final initialDate = widget.initialReferenceDate ?? DateTime.now();
+    _referenceDate = DateTime(initialDate.year, initialDate.month);
+  }
+
+  bool get _isCurrentMonth {
+    final now = widget.currentDate ?? DateTime.now();
+    return _referenceDate.year == now.year && _referenceDate.month == now.month;
+  }
+
+  void _showPreviousMonth() {
+    setState(() {
+      _referenceDate = DateTime(_referenceDate.year, _referenceDate.month - 1);
+    });
+  }
+
+  void _showNextMonth() {
+    if (_isCurrentMonth) {
+      return;
+    }
+
+    setState(() {
+      _referenceDate = DateTime(_referenceDate.year, _referenceDate.month + 1);
+    });
+  }
 
   Future<void> _openTransactionForm(
     BuildContext context,
@@ -24,7 +62,7 @@ class DashboardPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final transactionsAsync = ref.watch(transactionsStreamProvider);
@@ -50,18 +88,50 @@ class DashboardPage extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: NexusSpacing.xs),
-                Text(
-                  _formatMonthYear(DateTime.now()),
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: colors.onSurfaceVariant,
-                  ),
+                Row(
+                  children: [
+                    IconButton.outlined(
+                      tooltip: 'Mês anterior',
+                      onPressed: _showPreviousMonth,
+                      icon: const Icon(Icons.chevron_left_rounded),
+                    ),
+                    Expanded(
+                      child: Text(
+                        _formatMonthYear(_referenceDate),
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: colors.onSurface,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    IconButton.outlined(
+                      tooltip: 'Próximo mês',
+                      onPressed: _isCurrentMonth ? null : _showNextMonth,
+                      icon: const Icon(Icons.chevron_right_rounded),
+                    ),
+                  ],
                 ),
+                if (!_isCurrentMonth) ...[
+                  const SizedBox(height: NexusSpacing.xs),
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        final now = widget.currentDate ?? DateTime.now();
+                        setState(() {
+                          _referenceDate = DateTime(now.year, now.month);
+                        });
+                      },
+                      child: const Text('Voltar para o mês atual'),
+                    ),
+                  ),
+                ],
                 const SizedBox(height: NexusSpacing.md),
                 transactionsAsync.when(
                   data: (transactions) {
                     final summary = DashboardSummary.fromTransactions(
                       transactions,
-                      referenceDate: DateTime.now(),
+                      referenceDate: _referenceDate,
                     );
 
                     return DashboardFinancialContent(

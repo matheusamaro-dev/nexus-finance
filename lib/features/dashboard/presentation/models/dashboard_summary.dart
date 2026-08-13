@@ -37,7 +37,7 @@ final class DashboardSummary {
       expenses: expenses,
       balance: income - expenses,
       transactionCount: monthlyTransactions.length,
-      recentTransactions: transactions.take(3).toList(),
+      recentTransactions: monthlyTransactions.take(3).toList(),
     );
   }
 
