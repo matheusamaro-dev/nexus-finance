@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="assets/branding/nexus_app_icon.png" alt="Símbolo do Nexus Finance" width="160">
+
 # Nexus Finance
 
 ### Laboratório de desenvolvimento mobile • Finanças pessoais • Flutter/Dart
@@ -9,6 +11,7 @@
 ![Riverpod](https://img.shields.io/badge/Riverpod-State%20Management-6E40C9?style=for-the-badge)
 ![Drift](https://img.shields.io/badge/Drift-SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-F59E0B?style=for-the-badge)
+[![Flutter Quality](https://github.com/matheusamaro-dev/nexus-finance/actions/workflows/flutter-quality.yml/badge.svg?branch=main)](https://github.com/matheusamaro-dev/nexus-finance/actions/workflows/flutter-quality.yml)
 
 **Aplicação de gestão financeira em evolução, utilizada como laboratório prático de arquitetura, persistência local, gerenciamento de estado e desenvolvimento de produto com Flutter.**
 
@@ -31,6 +34,16 @@ O foco atual é consolidar fundamentos de:
 - testes, legibilidade e evolução incremental.
 
 > **Status:** projeto ativo em desenvolvimento acadêmico e de portfólio. A arquitetura e as funcionalidades podem evoluir a cada iteração.
+
+---
+
+## 📱 Aplicativo
+
+<div align="center">
+  <img src="docs/screenshots/dashboard.png" alt="Dashboard do Nexus Finance em um dispositivo Android" width="360">
+</div>
+
+O Dashboard reúne saldo mensal, receitas, despesas, ações rápidas e os lançamentos mais recentes em uma experiência mobile com tema escuro. A captura acima foi feita em um dispositivo Android físico durante a validação da identidade visual.
 
 ---
 
@@ -102,6 +115,18 @@ Essa organização facilita a evolução do projeto sem concentrar toda a lógic
 
 ---
 
+## 🎨 Identidade visual
+
+A marca do Nexus Finance combina o monograma `NF`, um gráfico crescente e uma linha de conexão. O símbolo representa organização financeira, evolução e tecnologia.
+
+- **ícone do aplicativo:** símbolo `NF` sobre fundo escuro;
+- **splash screen:** marca centralizada e integrada ao tema do app;
+- **cor principal:** verde Nexus `#00BFA6`;
+- **direção visual:** dark premium, limpa, tecnológica e legível;
+- **guia de aplicação:** [`docs/brand-guide.md`](docs/brand-guide.md).
+
+---
+
 ## 🏗️ Princípios de engenharia
 
 O desenvolvimento segue uma linha incremental:
@@ -150,7 +175,9 @@ flutter run
 
 ---
 
-## ✅ Qualidade local
+## ✅ Qualidade
+
+Cada pull request para a `main` executa automaticamente formatação, análise estática e testes por meio do workflow **Flutter Quality**.
 
 Antes de consolidar uma alteração:
 
@@ -171,7 +198,13 @@ dart format lib test
 
 ```text
 nexus-finance/
+├── .github/
+│   └── workflows/
 ├── android/
+├── assets/
+│   └── branding/
+├── docs/
+│   └── screenshots/
 ├── lib/
 │   ├── app/
 │   ├── core/
@@ -203,6 +236,14 @@ nexus-finance/
 - [x] persistência local baseada em Drift/SQLite
 - [x] base de design system e temas
 
+### Identidade visual
+
+- [x] símbolo oficial do Nexus Finance
+- [x] ícone adaptativo do aplicativo Android
+- [x] splash screen integrada ao tema escuro
+- [x] aplicação da marca no Dashboard
+- [x] guia de identidade e captura real do app
+
 ### Produto
 
 - [ ] consolidar fluxo de transações
@@ -214,10 +255,18 @@ nexus-finance/
 ### Qualidade
 
 - [ ] ampliar cobertura de testes
-- [ ] automatizar análise estática e testes no CI
+- [x] automatizar formatação, análise estática e testes no CI
 - [ ] documentar decisões arquiteturais importantes
-- [ ] adicionar screenshots e demonstração visual
+- [x] adicionar screenshot e demonstração visual
 - [ ] revisar acessibilidade e responsividade
+
+### Próxima sequência
+
+1. consolidar criação, edição e exclusão de transações;
+2. ampliar os testes do domínio financeiro e dos fluxos principais;
+3. evoluir planejamento, metas e acompanhamento mensal;
+4. revisar acessibilidade e adaptação a diferentes tamanhos de tela;
+5. preparar uma versão demonstrável para portfólio e distribuição interna.
 
 ---
 
