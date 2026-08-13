@@ -15,6 +15,37 @@ class TransactionsPage extends ConsumerWidget {
     ).push<bool>(MaterialPageRoute(builder: (_) => const NewTransactionPage()));
   }
 
+  Future<void> _openEditTransaction(
+    BuildContext context,
+    FinancialTransaction transaction,
+  ) async {
+    await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => NewTransactionPage(transaction: transaction),
+      ),
+    );
+  }
+
+  Future<void> _restoreDeletedTransaction(
+    BuildContext context,
+    WidgetRef ref,
+    FinancialTransaction transaction,
+  ) async {
+    try {
+      await ref.read(transactionsRepositoryProvider).save(transaction);
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Não foi possível restaurar o lançamento.'),
+        ),
+      );
+    }
+  }
+
   Future<void> _confirmDelete(
     BuildContext context,
     WidgetRef ref,
@@ -51,9 +82,19 @@ class TransactionsPage extends ConsumerWidget {
         return;
       }
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Lançamento excluído.')));
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(
+        SnackBar(
+          content: const Text('Lançamento excluído.'),
+          action: SnackBarAction(
+            label: 'Desfazer',
+            onPressed: () {
+              _restoreDeletedTransaction(context, ref, transaction);
+            },
+          ),
+        ),
+      );
     } catch (_) {
       if (!context.mounted) {
         return;
@@ -93,6 +134,9 @@ class TransactionsPage extends ConsumerWidget {
 
                   return _TransactionCard(
                     transaction: transaction,
+                    onEdit: () {
+                      _openEditTransaction(context, transaction);
+                    },
                     onDelete: () {
                       _confirmDelete(context, ref, transaction);
                     },
@@ -119,9 +163,14 @@ class TransactionsPage extends ConsumerWidget {
 }
 
 class _TransactionCard extends StatelessWidget {
-  const _TransactionCard({required this.transaction, required this.onDelete});
+  const _TransactionCard({
+    required this.transaction,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   final FinancialTransaction transaction;
+  final VoidCallback onEdit;
   final VoidCallback onDelete;
 
   @override
@@ -141,7 +190,7 @@ class _TransactionCard extends StatelessWidget {
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () {},
+        onTap: onEdit,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
           child: Row(
@@ -229,11 +278,24 @@ class _TransactionCard extends StatelessWidget {
                     PopupMenuButton<String>(
                       tooltip: 'Mais opções',
                       onSelected: (value) {
-                        if (value == 'delete') {
-                          onDelete();
+                        switch (value) {
+                          case 'edit':
+                            onEdit();
+                          case 'delete':
+                            onDelete();
                         }
                       },
                       itemBuilder: (_) => const [
+                        PopupMenuItem(
+                          value: 'edit',
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit_outlined),
+                              SizedBox(width: 12),
+                              Text('Editar'),
+                            ],
+                          ),
+                        ),
                         PopupMenuItem(
                           value: 'delete',
                           child: Row(

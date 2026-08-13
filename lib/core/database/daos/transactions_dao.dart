@@ -27,7 +27,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<void> insertTransaction(TransactionsCompanion transaction) {
-    return into(transactions).insert(transaction);
+    return into(transactions).insertOnConflictUpdate(transaction);
   }
 
   Future<bool> updateTransaction(TransactionsCompanion transaction) {
