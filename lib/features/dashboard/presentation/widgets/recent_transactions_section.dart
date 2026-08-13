@@ -17,13 +17,13 @@ class RecentTransactionsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const NexusSectionTitle(title: 'Últimos lançamentos'),
+        const NexusSectionTitle(title: 'Lançamentos do mês'),
         const SizedBox(height: NexusSpacing.md),
         if (transactions.isEmpty)
           const NexusEmptyState(
             icon: Icons.receipt_long_outlined,
-            title: 'Nenhum lançamento cadastrado',
-            message: 'Suas receitas e despesas aparecerão aqui.',
+            title: 'A lista deste mês está vazia',
+            message: 'Selecione outro mês ou adicione uma receita ou despesa.',
           )
         else
           NexusCard(
