@@ -11,9 +11,11 @@ class NewTransactionPage extends ConsumerStatefulWidget {
   const NewTransactionPage({
     super.key,
     this.initialType = TransactionType.expense,
+    this.transaction,
   });
 
   final TransactionType initialType;
+  final FinancialTransaction? transaction;
 
   @override
   ConsumerState<NewTransactionPage> createState() => _NewTransactionPageState();
@@ -33,7 +35,19 @@ class _NewTransactionPageState extends ConsumerState<NewTransactionPage> {
   @override
   void initState() {
     super.initState();
-    _type = widget.initialType;
+    final transaction = widget.transaction;
+
+    _type = transaction?.type ?? widget.initialType;
+    _selectedDate = transaction?.date ?? DateTime.now();
+
+    if (transaction != null) {
+      _descriptionController.text = transaction.description;
+      _amountController.text = transaction.amount.reais
+          .toStringAsFixed(2)
+          .replaceAll('.', ',');
+      _categoryController.text = transaction.category ?? '';
+      _notesController.text = transaction.notes ?? '';
+    }
   }
 
   @override
@@ -61,14 +75,15 @@ class _NewTransactionPageState extends ConsumerState<NewTransactionPage> {
           .replaceAll(',', '.');
 
       final amount = num.parse(normalizedAmount);
+      final existingTransaction = widget.transaction;
 
       final transaction = FinancialTransaction(
-        id: const Uuid().v4(),
+        id: existingTransaction?.id ?? const Uuid().v4(),
         description: _descriptionController.text.trim(),
         amount: Money.fromReais(amount),
         type: _type,
         date: _selectedDate,
-        createdAt: DateTime.now(),
+        createdAt: existingTransaction?.createdAt ?? DateTime.now(),
         category: _categoryController.text.trim().isEmpty
             ? null
             : _categoryController.text.trim(),
@@ -131,9 +146,12 @@ class _NewTransactionPageState extends ConsumerState<NewTransactionPage> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isEditing = widget.transaction != null;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Novo lançamento')),
+      appBar: AppBar(
+        title: Text(isEditing ? 'Editar lançamento' : 'Novo lançamento'),
+      ),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -241,7 +259,13 @@ class _NewTransactionPageState extends ConsumerState<NewTransactionPage> {
                         ),
                       )
                     : const Icon(Icons.save_outlined),
-                label: Text(_isSaving ? 'Salvando...' : 'Salvar lançamento'),
+                label: Text(
+                  _isSaving
+                      ? 'Salvando...'
+                      : isEditing
+                      ? 'Salvar alterações'
+                      : 'Salvar lançamento',
+                ),
               ),
             ],
           ),
