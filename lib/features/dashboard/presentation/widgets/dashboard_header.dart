@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/design_system/nexus_radius.dart';
 import '../../../../core/design_system/nexus_spacing.dart';
 
 class DashboardHeader extends StatelessWidget {
@@ -8,20 +7,15 @@ class DashboardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-
     return Row(
       children: [
-        Container(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            color: colors.primaryContainer,
-            borderRadius: BorderRadius.circular(NexusRadius.lg),
-          ),
-          child: Icon(
-            Icons.account_balance_wallet_rounded,
-            color: colors.onPrimaryContainer,
+        ClipOval(
+          child: Image.asset(
+            'assets/branding/nexus_app_icon.png',
+            width: 52,
+            height: 52,
+            semanticLabel: 'Símbolo do Nexus Finance',
+            fit: BoxFit.cover,
           ),
         ),
         const SizedBox(width: NexusSpacing.md),
