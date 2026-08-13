@@ -6,8 +6,26 @@ import '../domain/entities/financial_transaction.dart';
 import '../domain/entities/transaction_type.dart';
 import 'pages/new_transaction_page.dart';
 
-class TransactionsPage extends ConsumerWidget {
+enum _TransactionFilter { all, income, expense }
+
+class TransactionsPage extends ConsumerStatefulWidget {
   const TransactionsPage({super.key});
+
+  @override
+  ConsumerState<TransactionsPage> createState() => _TransactionsPageState();
+}
+
+class _TransactionsPageState extends ConsumerState<TransactionsPage> {
+  final _searchController = TextEditingController();
+
+  _TransactionFilter _selectedFilter = _TransactionFilter.all;
+  String _query = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   Future<void> _openNewTransaction(BuildContext context) async {
     await Navigator.of(
@@ -28,7 +46,6 @@ class TransactionsPage extends ConsumerWidget {
 
   Future<void> _restoreDeletedTransaction(
     BuildContext context,
-    WidgetRef ref,
     FinancialTransaction transaction,
   ) async {
     try {
@@ -48,7 +65,6 @@ class TransactionsPage extends ConsumerWidget {
 
   Future<void> _confirmDelete(
     BuildContext context,
-    WidgetRef ref,
     FinancialTransaction transaction,
   ) async {
     final confirmed = await showDialog<bool>(
@@ -90,7 +106,7 @@ class TransactionsPage extends ConsumerWidget {
           action: SnackBarAction(
             label: 'Desfazer',
             onPressed: () {
-              _restoreDeletedTransaction(context, ref, transaction);
+              _restoreDeletedTransaction(context, transaction);
             },
           ),
         ),
@@ -106,8 +122,48 @@ class TransactionsPage extends ConsumerWidget {
     }
   }
 
+  List<FinancialTransaction> _filteredTransactions(
+    List<FinancialTransaction> transactions,
+  ) {
+    final normalizedQuery = _query.trim().toLowerCase();
+
+    return transactions.where((transaction) {
+      final matchesType = switch (_selectedFilter) {
+        _TransactionFilter.all => true,
+        _TransactionFilter.income => transaction.type == TransactionType.income,
+        _TransactionFilter.expense =>
+          transaction.type == TransactionType.expense,
+      };
+
+      if (!matchesType || normalizedQuery.isEmpty) {
+        return matchesType;
+      }
+
+      final searchableText = [
+        transaction.description,
+        transaction.category,
+        transaction.notes,
+      ].whereType<String>().join(' ').toLowerCase();
+
+      return searchableText.contains(normalizedQuery);
+    }).toList();
+  }
+
+  void _clearFilters() {
+    _searchController.clear();
+    setState(() {
+      _query = '';
+      _selectedFilter = _TransactionFilter.all;
+    });
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    setState(() => _query = '');
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final transactionsAsync = ref.watch(transactionsStreamProvider);
 
     return Scaffold(
@@ -121,28 +177,27 @@ class TransactionsPage extends ConsumerWidget {
               );
             }
 
-            return RefreshIndicator(
+            return _TransactionsContent(
+              transactions: _filteredTransactions(transactions),
+              searchController: _searchController,
+              selectedFilter: _selectedFilter,
+              onSearchChanged: (query) {
+                setState(() => _query = query);
+              },
+              onFilterChanged: (filter) {
+                setState(() => _selectedFilter = filter);
+              },
+              onClearSearch: _clearSearch,
+              onClearFilters: _clearFilters,
               onRefresh: () async {
                 ref.invalidate(transactionsStreamProvider);
               },
-              child: ListView.separated(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-                itemCount: transactions.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 12),
-                itemBuilder: (context, index) {
-                  final transaction = transactions[index];
-
-                  return _TransactionCard(
-                    transaction: transaction,
-                    onEdit: () {
-                      _openEditTransaction(context, transaction);
-                    },
-                    onDelete: () {
-                      _confirmDelete(context, ref, transaction);
-                    },
-                  );
-                },
-              ),
+              onEdit: (transaction) {
+                _openEditTransaction(context, transaction);
+              },
+              onDelete: (transaction) {
+                _confirmDelete(context, transaction);
+              },
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
@@ -157,6 +212,118 @@ class TransactionsPage extends ConsumerWidget {
         onPressed: () => _openNewTransaction(context),
         icon: const Icon(Icons.add_rounded),
         label: const Text('Novo'),
+      ),
+    );
+  }
+}
+
+class _TransactionsContent extends StatelessWidget {
+  const _TransactionsContent({
+    required this.transactions,
+    required this.searchController,
+    required this.selectedFilter,
+    required this.onSearchChanged,
+    required this.onFilterChanged,
+    required this.onClearSearch,
+    required this.onClearFilters,
+    required this.onRefresh,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  final List<FinancialTransaction> transactions;
+  final TextEditingController searchController;
+  final _TransactionFilter selectedFilter;
+  final ValueChanged<String> onSearchChanged;
+  final ValueChanged<_TransactionFilter> onFilterChanged;
+  final VoidCallback onClearSearch;
+  final VoidCallback onClearFilters;
+  final Future<void> Function() onRefresh;
+  final ValueChanged<FinancialTransaction> onEdit;
+  final ValueChanged<FinancialTransaction> onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+            sliver: SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  TextField(
+                    key: const ValueKey('transaction-search-field'),
+                    controller: searchController,
+                    onChanged: onSearchChanged,
+                    textInputAction: TextInputAction.search,
+                    decoration: InputDecoration(
+                      labelText: 'Buscar lançamento',
+                      hintText: 'Descrição, categoria ou observação',
+                      prefixIcon: const Icon(Icons.search_rounded),
+                      suffixIcon: searchController.text.isEmpty
+                          ? null
+                          : IconButton(
+                              tooltip: 'Limpar busca',
+                              onPressed: onClearSearch,
+                              icon: const Icon(Icons.close_rounded),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: SegmentedButton<_TransactionFilter>(
+                      showSelectedIcon: false,
+                      segments: const [
+                        ButtonSegment(
+                          value: _TransactionFilter.all,
+                          label: Text('Todos'),
+                        ),
+                        ButtonSegment(
+                          value: _TransactionFilter.income,
+                          label: Text('Receitas'),
+                        ),
+                        ButtonSegment(
+                          value: _TransactionFilter.expense,
+                          label: Text('Despesas'),
+                        ),
+                      ],
+                      selected: {selectedFilter},
+                      onSelectionChanged: (selection) {
+                        onFilterChanged(selection.first);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (transactions.isEmpty)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: _NoFilteredTransactionsState(onClear: onClearFilters),
+            )
+          else
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 100),
+              sliver: SliverList.separated(
+                itemCount: transactions.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  final transaction = transactions[index];
+
+                  return _TransactionCard(
+                    transaction: transaction,
+                    onEdit: () => onEdit(transaction),
+                    onDelete: () => onDelete(transaction),
+                  );
+                },
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -415,6 +582,54 @@ class _TransactionChip extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _NoFilteredTransactionsState extends StatelessWidget {
+  const _NoFilteredTransactionsState({required this.onClear});
+
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(32, 24, 32, 120),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.search_off_rounded,
+              size: 56,
+              color: colors.onSurfaceVariant,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Nenhum lançamento encontrado',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Tente outra busca ou mostre todos os tipos de lançamento.',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colors.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 20),
+            OutlinedButton.icon(
+              onPressed: onClear,
+              icon: const Icon(Icons.filter_alt_off_rounded),
+              label: const Text('Limpar filtros'),
+            ),
+          ],
+        ),
       ),
     );
   }
