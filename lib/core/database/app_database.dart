@@ -5,19 +5,34 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
+import 'daos/monthly_spending_plans_dao.dart';
 import 'daos/transactions_dao.dart';
+import 'tables/monthly_spending_plans_table.dart';
 import 'tables/transactions_table.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [Transactions], daos: [TransactionsDao])
+@DriftDatabase(
+  tables: [Transactions, MonthlySpendingPlans],
+  daos: [TransactionsDao, MonthlySpendingPlansDao],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (migrator) => migrator.createAll(),
+    onUpgrade: (migrator, from, to) async {
+      if (from < 2) {
+        await migrator.createTable(monthlySpendingPlans);
+      }
+    },
+  );
 
   Future<void> clearAllData() async {
     await transaction(() async {
