@@ -34,7 +34,8 @@ Os valores acima correspondem aos tokens definidos no design system do aplicativ
 
 ### Splash screen
 
-- centralizar o símbolo no fundo escuro;
+- centralizar a versão transparente do símbolo no fundo escuro;
+- não aplicar círculo, disco, moldura ou fundo próprio atrás da marca;
 - evitar textos pequenos, animações longas ou informações adicionais;
 - manter a passagem para o Dashboard visualmente contínua.
 
@@ -44,10 +45,9 @@ Os valores acima correspondem aos tokens definidos no design system do aplicativ
 - priorizar legibilidade em tamanhos reduzidos;
 - usar o verde da marca com moderação para manter a hierarquia visual.
 
-## Arquivo principal
+## Arquivos principais
 
-O arquivo-fonte utilizado pelo aplicativo está em:
+- `assets/branding/nexus_app_icon.png`: ícone externo do aplicativo;
+- `assets/branding/nexus_mark_transparent.png`: cabeçalho interno e splash screen.
 
-`assets/branding/nexus_app_icon.png`
-
-As variações Android são geradas pelas configurações versionadas em `flutter_launcher_icons.yaml` e `flutter_native_splash.yaml`.
+As variações Android são geradas pelas configurações versionadas em `flutter_launcher_icons.yaml` e `flutter_native_splash.yaml`. O ícone externo e a marca interna permanecem separados para respeitar os diferentes recortes do Android.

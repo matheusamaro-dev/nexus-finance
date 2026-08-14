@@ -9,14 +9,13 @@ class DashboardHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        ClipOval(
-          child: Image.asset(
-            'assets/branding/nexus_app_icon.png',
-            width: 52,
-            height: 52,
-            semanticLabel: 'Símbolo do Nexus Finance',
-            fit: BoxFit.cover,
-          ),
+        Image.asset(
+          'assets/branding/nexus_mark_transparent.png',
+          width: 56,
+          height: 56,
+          semanticLabel: 'Símbolo do Nexus Finance',
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.high,
         ),
         const SizedBox(width: NexusSpacing.md),
         const Expanded(

@@ -120,7 +120,7 @@ Essa organização facilita a evolução do projeto sem concentrar toda a lógic
 A marca do Nexus Finance combina o monograma `NF`, um gráfico crescente e uma linha de conexão. O símbolo representa organização financeira, evolução e tecnologia.
 
 - **ícone do aplicativo:** símbolo `NF` sobre fundo escuro;
-- **splash screen:** marca centralizada e integrada ao tema do app;
+- **splash screen:** marca transparente centralizada e integrada ao tema do app;
 - **cor principal:** verde Nexus `#00BFA6`;
 - **direção visual:** dark premium, limpa, tecnológica e legível;
 - **guia de aplicação:** [`docs/brand-guide.md`](docs/brand-guide.md).
