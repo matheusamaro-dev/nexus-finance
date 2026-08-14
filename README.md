@@ -246,15 +246,17 @@ nexus-finance/
 
 ### Produto
 
-- [ ] consolidar fluxo de transações
-- [ ] evoluir dashboard financeiro
-- [ ] ampliar planejamento e metas
+- [x] consolidar criação, edição e exclusão de transações
+- [x] adicionar busca e filtros de lançamentos
+- [x] alinhar o dashboard por mês com navegação entre períodos
+- [x] adicionar planejamento mensal de gastos
+- [ ] criar metas financeiras de médio e longo prazo
 - [ ] aprimorar preferências e configurações
 - [ ] tratamento consistente de estados vazios e erros
 
 ### Qualidade
 
-- [ ] ampliar cobertura de testes
+- [x] ampliar cobertura dos fluxos principais e do domínio financeiro
 - [x] automatizar formatação, análise estática e testes no CI
 - [ ] documentar decisões arquiteturais importantes
 - [x] adicionar screenshot e demonstração visual
@@ -262,10 +264,10 @@ nexus-finance/
 
 ### Próxima sequência
 
-1. consolidar criação, edição e exclusão de transações;
-2. ampliar os testes do domínio financeiro e dos fluxos principais;
-3. evoluir planejamento, metas e acompanhamento mensal;
-4. revisar acessibilidade e adaptação a diferentes tamanhos de tela;
+1. revisar acessibilidade e adaptação a diferentes tamanhos de tela;
+2. evoluir ajustes, preferências e proteção dos dados locais;
+3. criar metas financeiras com acompanhamento de progresso;
+4. preparar contas e cartões como módulos funcionais;
 5. preparar uma versão demonstrável para portfólio e distribuição interna.
 
 ---
