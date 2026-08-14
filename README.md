@@ -250,7 +250,11 @@ nexus-finance/
 - [x] adicionar busca e filtros de lançamentos
 - [x] alinhar o dashboard por mês com navegação entre períodos
 - [x] adicionar planejamento mensal de gastos
+- [ ] cadastrar contas recorrentes, vencimentos e parcelas
+- [ ] importar lançamentos com prévia e detecção de duplicidades
+- [ ] controlar contas, cartões, faturas e transferências
 - [ ] criar metas financeiras de médio e longo prazo
+- [ ] adicionar relatórios, saldo projetado e revisão mensal
 - [ ] aprimorar preferências e configurações
 - [ ] tratamento consistente de estados vazios e erros
 
@@ -264,11 +268,14 @@ nexus-finance/
 
 ### Próxima sequência
 
-1. revisar acessibilidade e adaptação a diferentes tamanhos de tela;
-2. evoluir ajustes, preferências e proteção dos dados locais;
-3. criar metas financeiras com acompanhamento de progresso;
-4. preparar contas e cartões como módulos funcionais;
-5. preparar uma versão demonstrável para portfólio e distribuição interna.
+1. criar contas recorrentes, vencimentos e parcelas;
+2. importar lançamentos em lote com prévia e deduplicação;
+3. evoluir contas, cartões, faturas e transferências;
+4. proteger dados locais com biometria e backup criptografado;
+5. criar metas, relatórios e simulação de quitação de dívidas;
+6. avaliar OCR, categorização local e Open Finance autorizado.
+
+A análise comparativa e os critérios de priorização estão em [`docs/market-analysis.md`](docs/market-analysis.md).
 
 ---
 
