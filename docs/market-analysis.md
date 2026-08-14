@@ -24,7 +24,7 @@ O aplicativo já entrega uma fundação importante:
 - persistência reativa e testes automatizados;
 - identidade visual própria.
 
-As maiores lacunas, comparadas às referências, estão em contas recorrentes, vencimentos, cartões e faturas, importação de dados, metas, relatórios e proteção dos dados locais.
+As maiores lacunas, comparadas às referências, estão em cartões e faturas, importação de dados, metas, relatórios e proteção dos dados locais. Contas recorrentes e vencimentos já possuem uma primeira entrega funcional.
 
 ## Princípios do produto
 
@@ -73,4 +73,4 @@ As maiores lacunas, comparadas às referências, estão em contas recorrentes, v
 
 ## Próxima entrega
 
-A próxima melhoria funcional deve iniciar a **Etapa 1**, modelando contas recorrentes e vencimentos sem misturar cartões, IA ou Open Finance na mesma branch. Em seguida, a importação em lote permitirá recuperar dados com segurança sem publicar informações financeiras pessoais no repositório.
+A próxima melhoria funcional deve continuar a **Etapa 1** com importação em lote, prévia e deduplicação. Esse fluxo permitirá recuperar dados com segurança sem publicar informações financeiras pessoais no repositório. Parcelas e saldo projetado serão evoluídos em branches próprias, sem misturar cartões, IA ou Open Finance no mesmo escopo.

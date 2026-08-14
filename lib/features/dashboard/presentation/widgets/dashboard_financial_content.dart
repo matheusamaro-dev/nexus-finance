@@ -14,11 +14,13 @@ class DashboardFinancialContent extends StatelessWidget {
     required this.summary,
     required this.onAddIncome,
     required this.onAddExpense,
+    required this.onOpenBills,
   });
 
   final DashboardSummary summary;
   final VoidCallback onAddIncome;
   final VoidCallback onAddExpense;
+  final VoidCallback onOpenBills;
 
   @override
   Widget build(BuildContext context) {
@@ -67,9 +69,10 @@ class DashboardFinancialContent extends StatelessWidget {
               icon: Icons.remove_rounded,
               onPressed: onAddExpense,
             ),
-            const QuickAction(
+            QuickAction(
               label: 'Conta',
               icon: Icons.calendar_month_rounded,
+              onPressed: onOpenBills,
             ),
             const QuickAction(label: 'Cartão', icon: Icons.credit_card_rounded),
           ],

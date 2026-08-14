@@ -891,17 +891,547 @@ class MonthlySpendingPlansCompanion
   }
 }
 
+class $RecurringBillsTable extends RecurringBills
+    with TableInfo<$RecurringBillsTable, RecurringBill> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RecurringBillsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 160,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _amountCentsMeta = const VerificationMeta(
+    'amountCents',
+  );
+  @override
+  late final GeneratedColumn<int> amountCents = GeneratedColumn<int>(
+    'amount_cents',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dueDayMeta = const VerificationMeta('dueDay');
+  @override
+  late final GeneratedColumn<int> dueDay = GeneratedColumn<int>(
+    'due_day',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    description,
+    amountCents,
+    dueDay,
+    category,
+    isActive,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'recurring_bills';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RecurringBill> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('amount_cents')) {
+      context.handle(
+        _amountCentsMeta,
+        amountCents.isAcceptableOrUnknown(
+          data['amount_cents']!,
+          _amountCentsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_amountCentsMeta);
+    }
+    if (data.containsKey('due_day')) {
+      context.handle(
+        _dueDayMeta,
+        dueDay.isAcceptableOrUnknown(data['due_day']!, _dueDayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dueDayMeta);
+    }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RecurringBill map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RecurringBill(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      amountCents: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount_cents'],
+      )!,
+      dueDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}due_day'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      ),
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $RecurringBillsTable createAlias(String alias) {
+    return $RecurringBillsTable(attachedDatabase, alias);
+  }
+}
+
+class RecurringBill extends DataClass implements Insertable<RecurringBill> {
+  final String id;
+  final String description;
+  final int amountCents;
+  final int dueDay;
+  final String? category;
+  final bool isActive;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const RecurringBill({
+    required this.id,
+    required this.description,
+    required this.amountCents,
+    required this.dueDay,
+    this.category,
+    required this.isActive,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['description'] = Variable<String>(description);
+    map['amount_cents'] = Variable<int>(amountCents);
+    map['due_day'] = Variable<int>(dueDay);
+    if (!nullToAbsent || category != null) {
+      map['category'] = Variable<String>(category);
+    }
+    map['is_active'] = Variable<bool>(isActive);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  RecurringBillsCompanion toCompanion(bool nullToAbsent) {
+    return RecurringBillsCompanion(
+      id: Value(id),
+      description: Value(description),
+      amountCents: Value(amountCents),
+      dueDay: Value(dueDay),
+      category: category == null && nullToAbsent
+          ? const Value.absent()
+          : Value(category),
+      isActive: Value(isActive),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory RecurringBill.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RecurringBill(
+      id: serializer.fromJson<String>(json['id']),
+      description: serializer.fromJson<String>(json['description']),
+      amountCents: serializer.fromJson<int>(json['amountCents']),
+      dueDay: serializer.fromJson<int>(json['dueDay']),
+      category: serializer.fromJson<String?>(json['category']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'description': serializer.toJson<String>(description),
+      'amountCents': serializer.toJson<int>(amountCents),
+      'dueDay': serializer.toJson<int>(dueDay),
+      'category': serializer.toJson<String?>(category),
+      'isActive': serializer.toJson<bool>(isActive),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  RecurringBill copyWith({
+    String? id,
+    String? description,
+    int? amountCents,
+    int? dueDay,
+    Value<String?> category = const Value.absent(),
+    bool? isActive,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => RecurringBill(
+    id: id ?? this.id,
+    description: description ?? this.description,
+    amountCents: amountCents ?? this.amountCents,
+    dueDay: dueDay ?? this.dueDay,
+    category: category.present ? category.value : this.category,
+    isActive: isActive ?? this.isActive,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  RecurringBill copyWithCompanion(RecurringBillsCompanion data) {
+    return RecurringBill(
+      id: data.id.present ? data.id.value : this.id,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      amountCents: data.amountCents.present
+          ? data.amountCents.value
+          : this.amountCents,
+      dueDay: data.dueDay.present ? data.dueDay.value : this.dueDay,
+      category: data.category.present ? data.category.value : this.category,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecurringBill(')
+          ..write('id: $id, ')
+          ..write('description: $description, ')
+          ..write('amountCents: $amountCents, ')
+          ..write('dueDay: $dueDay, ')
+          ..write('category: $category, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    description,
+    amountCents,
+    dueDay,
+    category,
+    isActive,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RecurringBill &&
+          other.id == this.id &&
+          other.description == this.description &&
+          other.amountCents == this.amountCents &&
+          other.dueDay == this.dueDay &&
+          other.category == this.category &&
+          other.isActive == this.isActive &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class RecurringBillsCompanion extends UpdateCompanion<RecurringBill> {
+  final Value<String> id;
+  final Value<String> description;
+  final Value<int> amountCents;
+  final Value<int> dueDay;
+  final Value<String?> category;
+  final Value<bool> isActive;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const RecurringBillsCompanion({
+    this.id = const Value.absent(),
+    this.description = const Value.absent(),
+    this.amountCents = const Value.absent(),
+    this.dueDay = const Value.absent(),
+    this.category = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RecurringBillsCompanion.insert({
+    required String id,
+    required String description,
+    required int amountCents,
+    required int dueDay,
+    this.category = const Value.absent(),
+    this.isActive = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       description = Value(description),
+       amountCents = Value(amountCents),
+       dueDay = Value(dueDay),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<RecurringBill> custom({
+    Expression<String>? id,
+    Expression<String>? description,
+    Expression<int>? amountCents,
+    Expression<int>? dueDay,
+    Expression<String>? category,
+    Expression<bool>? isActive,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (description != null) 'description': description,
+      if (amountCents != null) 'amount_cents': amountCents,
+      if (dueDay != null) 'due_day': dueDay,
+      if (category != null) 'category': category,
+      if (isActive != null) 'is_active': isActive,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RecurringBillsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? description,
+    Value<int>? amountCents,
+    Value<int>? dueDay,
+    Value<String?>? category,
+    Value<bool>? isActive,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return RecurringBillsCompanion(
+      id: id ?? this.id,
+      description: description ?? this.description,
+      amountCents: amountCents ?? this.amountCents,
+      dueDay: dueDay ?? this.dueDay,
+      category: category ?? this.category,
+      isActive: isActive ?? this.isActive,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (amountCents.present) {
+      map['amount_cents'] = Variable<int>(amountCents.value);
+    }
+    if (dueDay.present) {
+      map['due_day'] = Variable<int>(dueDay.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecurringBillsCompanion(')
+          ..write('id: $id, ')
+          ..write('description: $description, ')
+          ..write('amountCents: $amountCents, ')
+          ..write('dueDay: $dueDay, ')
+          ..write('category: $category, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $TransactionsTable transactions = $TransactionsTable(this);
   late final $MonthlySpendingPlansTable monthlySpendingPlans =
       $MonthlySpendingPlansTable(this);
+  late final $RecurringBillsTable recurringBills = $RecurringBillsTable(this);
   late final TransactionsDao transactionsDao = TransactionsDao(
     this as AppDatabase,
   );
   late final MonthlySpendingPlansDao monthlySpendingPlansDao =
       MonthlySpendingPlansDao(this as AppDatabase);
+  late final RecurringBillsDao recurringBillsDao = RecurringBillsDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -909,6 +1439,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     transactions,
     monthlySpendingPlans,
+    recurringBills,
   ];
 }
 
@@ -1391,6 +1922,269 @@ typedef $$MonthlySpendingPlansTableProcessedTableManager =
       MonthlySpendingPlanRow,
       PrefetchHooks Function()
     >;
+typedef $$RecurringBillsTableCreateCompanionBuilder =
+    RecurringBillsCompanion Function({
+      required String id,
+      required String description,
+      required int amountCents,
+      required int dueDay,
+      Value<String?> category,
+      Value<bool> isActive,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$RecurringBillsTableUpdateCompanionBuilder =
+    RecurringBillsCompanion Function({
+      Value<String> id,
+      Value<String> description,
+      Value<int> amountCents,
+      Value<int> dueDay,
+      Value<String?> category,
+      Value<bool> isActive,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$RecurringBillsTableFilterComposer
+    extends Composer<_$AppDatabase, $RecurringBillsTable> {
+  $$RecurringBillsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get amountCents => $composableBuilder(
+    column: $table.amountCents,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get dueDay => $composableBuilder(
+    column: $table.dueDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RecurringBillsTableOrderingComposer
+    extends Composer<_$AppDatabase, $RecurringBillsTable> {
+  $$RecurringBillsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get amountCents => $composableBuilder(
+    column: $table.amountCents,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get dueDay => $composableBuilder(
+    column: $table.dueDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RecurringBillsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RecurringBillsTable> {
+  $$RecurringBillsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get amountCents => $composableBuilder(
+    column: $table.amountCents,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get dueDay =>
+      $composableBuilder(column: $table.dueDay, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$RecurringBillsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RecurringBillsTable,
+          RecurringBill,
+          $$RecurringBillsTableFilterComposer,
+          $$RecurringBillsTableOrderingComposer,
+          $$RecurringBillsTableAnnotationComposer,
+          $$RecurringBillsTableCreateCompanionBuilder,
+          $$RecurringBillsTableUpdateCompanionBuilder,
+          (
+            RecurringBill,
+            BaseReferences<_$AppDatabase, $RecurringBillsTable, RecurringBill>,
+          ),
+          RecurringBill,
+          PrefetchHooks Function()
+        > {
+  $$RecurringBillsTableTableManager(
+    _$AppDatabase db,
+    $RecurringBillsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RecurringBillsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RecurringBillsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RecurringBillsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<int> amountCents = const Value.absent(),
+                Value<int> dueDay = const Value.absent(),
+                Value<String?> category = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RecurringBillsCompanion(
+                id: id,
+                description: description,
+                amountCents: amountCents,
+                dueDay: dueDay,
+                category: category,
+                isActive: isActive,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String description,
+                required int amountCents,
+                required int dueDay,
+                Value<String?> category = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => RecurringBillsCompanion.insert(
+                id: id,
+                description: description,
+                amountCents: amountCents,
+                dueDay: dueDay,
+                category: category,
+                isActive: isActive,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RecurringBillsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RecurringBillsTable,
+      RecurringBill,
+      $$RecurringBillsTableFilterComposer,
+      $$RecurringBillsTableOrderingComposer,
+      $$RecurringBillsTableAnnotationComposer,
+      $$RecurringBillsTableCreateCompanionBuilder,
+      $$RecurringBillsTableUpdateCompanionBuilder,
+      (
+        RecurringBill,
+        BaseReferences<_$AppDatabase, $RecurringBillsTable, RecurringBill>,
+      ),
+      RecurringBill,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1399,4 +2193,6 @@ class $AppDatabaseManager {
       $$TransactionsTableTableManager(_db, _db.transactions);
   $$MonthlySpendingPlansTableTableManager get monthlySpendingPlans =>
       $$MonthlySpendingPlansTableTableManager(_db, _db.monthlySpendingPlans);
+  $$RecurringBillsTableTableManager get recurringBills =>
+      $$RecurringBillsTableTableManager(_db, _db.recurringBills);
 }

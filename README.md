@@ -66,6 +66,7 @@ flowchart TD
     D --> D2[Transactions]
     D --> D3[Planning]
     D --> D4[Settings]
+    D --> D5[Recurring Bills]
 ```
 
 ---
@@ -92,6 +93,7 @@ Estrutura orientada a funcionalidades:
 - `dashboard`
 - `transactions`
 - `planning`
+- `recurring_bills`
 - `settings`
 
 Essa organização facilita a evolução do projeto sem concentrar toda a lógica em uma única camada.
@@ -250,7 +252,8 @@ nexus-finance/
 - [x] adicionar busca e filtros de lançamentos
 - [x] alinhar o dashboard por mês com navegação entre períodos
 - [x] adicionar planejamento mensal de gastos
-- [ ] cadastrar contas recorrentes, vencimentos e parcelas
+- [x] cadastrar contas recorrentes e vencimentos
+- [ ] acompanhar parcelas com início e fim
 - [ ] importar lançamentos com prévia e detecção de duplicidades
 - [ ] controlar contas, cartões, faturas e transferências
 - [ ] criar metas financeiras de médio e longo prazo
@@ -268,8 +271,8 @@ nexus-finance/
 
 ### Próxima sequência
 
-1. criar contas recorrentes, vencimentos e parcelas;
-2. importar lançamentos em lote com prévia e deduplicação;
+1. importar lançamentos em lote com prévia e deduplicação;
+2. acompanhar parcelas com início, fim e projeção mensal;
 3. evoluir contas, cartões, faturas e transferências;
 4. proteger dados locais com biometria e backup criptografado;
 5. criar metas, relatórios e simulação de quitação de dívidas;
