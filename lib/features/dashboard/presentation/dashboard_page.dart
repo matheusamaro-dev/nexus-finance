@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/design_system/nexus_spacing.dart';
+import '../../recurring_bills/presentation/pages/recurring_bills_page.dart';
 import '../../transactions/application/providers/transactions_providers.dart';
 import '../../transactions/domain/entities/transaction_type.dart';
 import '../../transactions/presentation/pages/new_transaction_page.dart';
@@ -58,6 +59,14 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
   ) async {
     await Navigator.of(context).push<bool>(
       MaterialPageRoute(builder: (_) => NewTransactionPage(initialType: type)),
+    );
+  }
+
+  Future<void> _openRecurringBills(BuildContext context) async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (_) => RecurringBillsPage(referenceDate: _referenceDate),
+      ),
     );
   }
 
@@ -142,6 +151,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> {
                         context,
                         TransactionType.expense,
                       ),
+                      onOpenBills: () => _openRecurringBills(context),
                     );
                   },
                   loading: DashboardLoadingState.new,
